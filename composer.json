@@ -1,0 +1,13 @@
+{
+    "name": "mbrowniebytes/yii2-clean-vendors",
+	
+    "type": "yii2-extension",
+
+    "description": "Clean composer vendor/ directory by removing docs, tests, gits, etc",
+    "keywords": ["yii2", "clean", "vendor", "composer"],
+    "license": "MIT",
+
+    "require": {
+        "yiisoft/yii2": "*"
+    }
+}
