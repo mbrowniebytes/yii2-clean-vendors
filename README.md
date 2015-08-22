@@ -4,7 +4,9 @@ Yii2 command extension to clean composer's vendor/ directory
 This extension removes docs, tests, gits, etc from composer's vendor/ directory
 
 It is based on <a href="https://github.com/barryvdh/composer-cleanup-plugin">barryvdh/composer-cleanup-plugin</a>
-The format of the rules and the and removal logic have been copied.
+
+The format of the rules and the removal logic have been copied.
+
 The main changes are:
 - Callable as a Yii2 command
 - Provides progress feedback
@@ -53,8 +55,8 @@ or add to composer scripts section to always clean vendors
 
 Additional arguments
 -------------------
-
-- -dry-run	do not delete anything
-- -verbose	echo rules being run, dir/file being deleted
-- -silent	do not echo anything
-
+```
+-dry-run	do not delete anything
+-verbose	echo rules being run, dir/file being deleted
+-silent		do not echo anything
+```
