@@ -1,5 +1,4 @@
 <?php
-
 namespace app\commands;
 
 use yii\console\Controller;
@@ -19,39 +18,39 @@ use Yii;
 class CleanVendorsController extends Controller
 {
 
-	public $vendor_dir = 'vendor';
-	public $dry_run = false;
-	public $verbose = false;
-	public $silent = false;
-	public $rules = [];
+    public $vendor_dir = 'vendor';
+    public $dry_run = false;
+    public $verbose = false;
+    public $silent = false;
+    public $rules = [];
 
     public function actionIndex()
     {
-		foreach (Yii::$app->requestedParams as $param) {
-			if (stripos($param, 'dry-run') !== false || stripos($param, 'dryrun') !== false) {
-				$this->dry_run = true;
-			} else if (stripos($param, 'verbose') !== false) {
-				$this->verbose = true;
-			} else if (stripos($param, 'silent') !== false) {
-				$this->silent = true;
-			}
-		}
+        foreach (Yii::$app->requestedParams as $param) {
+            if (stripos($param, 'dry-run') !== false || stripos($param, 'dryrun') !== false) {
+                $this->dry_run = true;
+            } else if (stripos($param, 'verbose') !== false) {
+                $this->verbose = true;
+            } else if (stripos($param, 'silent') !== false) {
+                $this->silent = true;
+            }
+        }
 
-		$cleaned = $this->cleanPackages();
+        $cleaned = $this->cleanPackages();
 
-		if ($cleaned === false) {
-			return 1;
-		}
+        if ($cleaned === false) {
+            return 1;
+        }
 
-		return 0;
+        return 0;
     }
 
-	private function echo_msg($msg, $show=true)
-	{
-		if (!$this->silent && ($this->dry_run || $this->verbose || $show)) {
-			echo $msg."\n";
-		}
-	}
+    private function echo_msg($msg, $show=true)
+    {
+        if (!$this->silent && ($this->dry_run || $this->verbose || $show)) {
+            echo $msg."\n";
+        }
+    }
 
 
     /**
@@ -59,47 +58,47 @@ class CleanVendorsController extends Controller
      */
     public function cleanPackages()
     {
-		$this->echo_msg('Checking '.$this->vendor_dir.'/ to remove docs, gits, tests, etc .. ');
+        $this->echo_msg('Checking '.$this->vendor_dir.'/ to remove docs, gits, tests, etc .. ');
 
-		$composer_installed_file = $this->vendor_dir.'/composer/installed.json';
-		if (!is_file($composer_installed_file)) {
-			$this->echo_msg('Composer installed file ['.$composer_installed_file.'] does not exist');
-			return false;
-		}
+        $composer_installed_file = $this->vendor_dir.'/composer/installed.json';
+        if (!is_file($composer_installed_file)) {
+            $this->echo_msg('Composer installed file ['.$composer_installed_file.'] does not exist');
+            return false;
+        }
         $composer_installed = file_get_contents($composer_installed_file);
-		$packages = json_decode($composer_installed, true);
+        $packages = json_decode($composer_installed, true);
 
-		$this->echo_msg('Checking '.count($packages).' vendor packages ..');
+        $this->echo_msg('Checking '.count($packages).' vendor packages ..');
 
-		$this->rules = $this->getRules();
+        $this->rules = $this->getRules();
 
-		$nbr_cleaned = 0;
-		$nbr_checked = 0;
-		$nbr_default = 0;
-		foreach ($packages as $package) {
-			if (empty($package['name'])) {
-				// invalid composer package
-				continue;
-			}
+        $nbr_cleaned = 0;
+        $nbr_checked = 0;
+        $nbr_default = 0;
+        foreach ($packages as $package) {
+            if (empty($package['name'])) {
+                // invalid composer package
+                continue;
+            }
 
-			if (!isset($this->rules[$package['name']])) {
-				// no rule for package, so will use default rule
-				$package_name = 'default';
-				$nbr_default++;
-			} else {
-				$package_name = $package['name'];
-			}
+            if (!isset($this->rules[$package['name']])) {
+                // no rule for package, so will use default rule
+                $package_name = 'default';
+                $nbr_default++;
+            } else {
+                $package_name = $package['name'];
+            }
 
-			$cleaned = $this->cleanPackage($package_name);
-			if ($cleaned !== false) {
-				$nbr_cleaned += $cleaned;
-			}
-			$nbr_checked++;
-		}
-		$nbr_custom = ($nbr_checked - $nbr_default);
+            $cleaned = $this->cleanPackage($package_name);
+            if ($cleaned !== false) {
+                $nbr_cleaned += $cleaned;
+            }
+            $nbr_checked++;
+        }
+        $nbr_custom = ($nbr_checked - $nbr_default);
 
-		$this->echo_msg('Scanned '.$nbr_checked.' vendor package'.($nbr_checked == 1 ? '' : 's').'; used '.$nbr_custom.' custom rule'.($nbr_custom == 1 ? '' : 's').'; used default rule '.$nbr_default.' times');
-		$this->echo_msg('Done. Cleaned '.$nbr_cleaned.' files/dirs');
+        $this->echo_msg('Scanned '.$nbr_checked.' vendor package'.($nbr_checked == 1 ? '' : 's').'; used '.$nbr_custom.' custom rule'.($nbr_custom == 1 ? '' : 's').'; used default rule '.$nbr_default.' times');
+        $this->echo_msg('Done. Cleaned '.$nbr_cleaned.' files/dirs');
 
     }
 
@@ -117,38 +116,38 @@ class CleanVendorsController extends Controller
             return false;
         }
 
-		if ($this->dry_run) {
-			$msg_try = 'would have ';
-		} else {
-			$msg_try = '';
-		}
+        if ($this->dry_run) {
+            $msg_try = 'would have ';
+        } else {
+            $msg_try = '';
+        }
 
-		$nbr_cleaned = 0;
+        $nbr_cleaned = 0;
         foreach((array) $this->rules[$package] as $part) {
             // Split patterns for single globs (should be max 260 chars)
             $patterns = explode(' ', trim($part));
 
             foreach ($patterns as $pattern) {
                 try {
-					$files = glob($dir.'/'.$pattern);
-					$nbr_files = count($files);
-					$this->echo_msg('checking '.$nbr_files.' result'.($nbr_files == 1 ? '' : 's').' in '.$dir.'/'.$pattern, false);
+                    $files = glob($dir.'/'.$pattern);
+                    $nbr_files = count($files);
+                    $this->echo_msg('checking '.$nbr_files.' result'.($nbr_files == 1 ? '' : 's').' in '.$dir.'/'.$pattern, false);
 
                     foreach (glob($dir.'/'.$pattern) as $file) {
-						if (is_dir($file)) {
-							$this->echo_msg($msg_try.'removed dir: '.$file);
+                        if (is_dir($file)) {
+                            $this->echo_msg($msg_try.'removed dir: '.$file);
 
-							if (!$this->dry_run) {
-								FileHelper::removeDirectory($file);
-							}
-						} else {
-							$this->echo_msg($msg_try.'removed file: '.$file);
+                            if (!$this->dry_run) {
+                                FileHelper::removeDirectory($file);
+                            }
+                        } else {
+                            $this->echo_msg($msg_try.'removed file: '.$file);
 
-							if (!$this->dry_run) {
-								unlink($file);
-							}
-						}
-						$nbr_cleaned++;
+                            if (!$this->dry_run) {
+                                unlink($file);
+                            }
+                        }
+                        $nbr_cleaned++;
                     }
                 } catch (\Exception $e) {
                     $this->echo_msg('Could not parse ['.$dir.'/'.$pattern.']: '.$e->getMessage());
@@ -167,7 +166,7 @@ class CleanVendorsController extends Controller
         $tests = '.travis.yml .scrutinizer.yml phpunit.xml* phpunit.php test tests Tests travis .git';
 
         return array(
-			'default'								=> array($docs, $tests),
+            'default'                               => array($docs, $tests),
 
             // Symfony components
             'symfony/browser-kit'                   => array($docs, $tests),
@@ -251,25 +250,25 @@ class CleanVendorsController extends Controller
 
 
 
-			// codeception
-			'codeception/codeception'			 => array($docs, $tests),
-			'codeception/specify'				 => array($docs, $tests),
-			'codeception/verify'				 => array($docs, $tests),
+            // codeception
+            'codeception/codeception'               => array($docs, $tests),
+            'codeception/specify'                   => array($docs, $tests),
+            'codeception/verify'                    => array($docs, $tests),
 
-			// guzzle
-			'guzzlehttp/promises'				 => array($docs, $tests),
-			'guzzlehttp/psr7'					 => array($docs, $tests),
+            // guzzle
+            'guzzlehttp/promises'                   => array($docs, $tests),
+            'guzzlehttp/psr7'                       => array($docs, $tests),
 
-			// phpunit
-			'phpunit/php-code-coverage'			 => array($docs, $tests),
-			'phpunit/php-file-iterator'			 => array($docs, $tests),
-			'phpunit/php-text-template'			 => array($docs, $tests),
-			'phpunit/php-timer'					 => array($docs, $tests),
-			'phpunit/php-token-stream'			 => array($docs, $tests),
-			'phpunit/phpunit'					 => array($docs, $tests),
-			'phpunit/phpunit-mock-objects'		 => array($docs, $tests),
+            // phpunit
+            'phpunit/php-code-coverage'             => array($docs, $tests),
+            'phpunit/php-file-iterator'             => array($docs, $tests),
+            'phpunit/php-text-template'             => array($docs, $tests),
+            'phpunit/php-timer'                     => array($docs, $tests),
+            'phpunit/php-token-stream'              => array($docs, $tests),
+            'phpunit/phpunit'                       => array($docs, $tests),
+            'phpunit/phpunit-mock-objects'          => array($docs, $tests),
 
 
-		);
+        );
     }
 }
