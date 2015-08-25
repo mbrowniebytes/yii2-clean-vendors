@@ -38,7 +38,7 @@ To use this extension, add the following code in your application configuration 
 
 ```php
 'controllerMap' => [
-    'clean-assets' => [
+    'clean-vendors' => [
         'class' => 'mbrowniebytes\yii2cleanvendors\CleanVendorsController',
     ],
 ],
