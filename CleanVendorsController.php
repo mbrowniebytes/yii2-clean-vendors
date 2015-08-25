@@ -1,5 +1,5 @@
 <?php
-namespace app\commands;
+namespace mbrowniebytes\yii2cleanvendors;
 
 use yii\console\Controller;
 use yii\console\Exception;
