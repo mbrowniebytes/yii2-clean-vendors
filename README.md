@@ -20,13 +20,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require mbrowniebytes/yii2-clean-vendors
+php composer.phar require mbrowniebytes/yii2-clean-vendors:dev-master
 ```
 
 or add
 
 ```json
-"mbrowniebytes/yii2-clean-vendors": "*"
+"mbrowniebytes/yii2-clean-vendors": "dev-master"
 ```
 
 to the require section of your composer.json.
@@ -34,8 +34,15 @@ to the require section of your composer.json.
 
 Usage
 -----
+To use this extension, add the following code in your application configuration (console.php):
 
-To use this extension, call it from the command line 
+'controllerMap' => [
+    'clean-assets' => [
+        'class' => 'mbrowniebytes\yii2cleanvendors\CleanVendorsController',
+    ],
+],
+
+Then call the extension from the command line 
 
 ```
 /path/yii> php yii clean-vendors
@@ -44,7 +51,7 @@ Checking 56 vendor packages ..
 Done. Scanned 25 vendor packages, cleaned 10 files/dirs
 ```
 
-or add to composer scripts section to always clean vendors
+or add the extension to the composer scripts section to always clean vendors
 ```
     "scripts": {
 		"post-update-cmd": [
