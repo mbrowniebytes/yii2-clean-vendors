@@ -36,11 +36,13 @@ Usage
 -----
 To use this extension, add the following code in your application configuration (console.php):
 
+```php
 'controllerMap' => [
     'clean-assets' => [
         'class' => 'mbrowniebytes\yii2cleanvendors\CleanVendorsController',
     ],
 ],
+```
 
 Then call the extension from the command line 
 
