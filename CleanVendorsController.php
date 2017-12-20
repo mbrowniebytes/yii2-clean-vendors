@@ -113,7 +113,21 @@ class CleanVendorsController extends Controller
      */
     protected function cleanPackage($package)
     {
+        $namePackage = $package;
 
+        if(preg_match('/bower-asset/i', $package)) {
+            $this->echo_msg($package );
+            $namePackage = str_replace("bower-asset", 'bower', $package);
+            $this->echo_msg($package);
+        }
+
+        if(preg_match('/npm-asset/i', $package)) {
+            $this->echo_msg($package );
+            $namePackage = str_replace("npm-asset", 'npm', $package);
+            $this->echo_msg($package);
+        }
+
+        $dir = $this->vendor_dir . '/' . $namePackage;
 
         $dir = $this->vendor_dir . '/' . $package;
         if (!is_dir($dir)) {
