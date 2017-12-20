@@ -4,6 +4,7 @@ namespace mbrowniebytes\yii2cleanvendors;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
+use yii\helpers\ArrayHelper;
 use Yii;
 
 
@@ -70,8 +71,11 @@ class CleanVendorsController extends Controller
 
         $this->echo_msg('Checking '.count($packages).' vendor packages ..');
 
-        $this->rules = $this->getRules();
-
+        $this->rules = ArrayHelper::merge(
+            $this->rules,
+            $this->getRules()
+        );
+        
         $nbr_cleaned = 0;
         $nbr_checked = 0;
         $nbr_default = 0;
