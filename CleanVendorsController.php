@@ -4,6 +4,7 @@ namespace mbrowniebytes\yii2cleanvendors;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
+use yii\helpers\ArrayHelper;
 use Yii;
 
 
@@ -70,8 +71,11 @@ class CleanVendorsController extends Controller
 
         $this->echo_msg('Checking '.count($packages).' vendor packages ..');
 
-        $this->rules = $this->getRules();
-
+        $this->rules = ArrayHelper::merge(
+            $this->rules,
+            $this->getRules()
+        );
+        
         $nbr_cleaned = 0;
         $nbr_checked = 0;
         $nbr_default = 0;
@@ -109,9 +113,18 @@ class CleanVendorsController extends Controller
      */
     protected function cleanPackage($package)
     {
+        $namePackage = $package;
 
+        if(preg_match('/bower-asset/i', $package)) {
+            $namePackage = str_replace("bower-asset", 'bower', $package);
+        }
 
-        $dir = $this->vendor_dir . '/' . $package;
+        if(preg_match('/npm-asset/i', $package)) {
+            $namePackage = str_replace("npm-asset", 'npm', $package);
+        }
+
+        $dir = $this->vendor_dir . '/' . $namePackage;
+        
         if (!is_dir($dir)) {
             return false;
         }
