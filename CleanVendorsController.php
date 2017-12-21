@@ -91,6 +91,7 @@ class CleanVendorsController extends Controller
                 $nbr_default++;
             } else {
                 $package_name = $package['name'];
+                $package_name = $this->renamePackage($package_name);
             }
 
             $cleaned = $this->cleanPackage($package_name);
@@ -105,6 +106,22 @@ class CleanVendorsController extends Controller
         $this->echo_msg('Done. Cleaned '.$nbr_cleaned.' files/dirs');
 
     }
+	
+    /**
+     * Rename a package, based on custom logic
+     *
+     * @return string renamed package
+     */    
+    protected function renamePackage($package) 
+    {
+        if (preg_match('/bower-asset/i', $package)) {
+            $package = str_replace('bower-asset', 'bower', $package);
+        } else if (preg_match('/npm-asset/i', $package)) {
+            $package = str_replace('npm-asset', 'npm', $package);
+        }      
+
+        return $package;        
+    }
 
     /**
      * Clean a package, based on its rules.
@@ -113,17 +130,7 @@ class CleanVendorsController extends Controller
      */
     protected function cleanPackage($package)
     {
-        $namePackage = $package;
-
-        if(preg_match('/bower-asset/i', $package)) {
-            $namePackage = str_replace("bower-asset", 'bower', $package);
-        }
-
-        if(preg_match('/npm-asset/i', $package)) {
-            $namePackage = str_replace("npm-asset", 'npm', $package);
-        }
-
-        $dir = $this->vendor_dir . '/' . $namePackage;
+        $dir = $this->vendor_dir . '/' . $package;
         
         if (!is_dir($dir)) {
             return false;
